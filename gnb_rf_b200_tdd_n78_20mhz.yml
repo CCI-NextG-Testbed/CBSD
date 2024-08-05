@@ -1,0 +1,108 @@
+amf:
+  addr: 127.0.0.5                                             # The address or hostname of the AMF.
+  bind_addr: 127.0.0.1                                          # A local IP that the gNB binds to for traffic from the AMF.
+
+rf_driver:
+  device_driver: uhd                                            # The RF driver name.
+  device_args: type=x300, addr=192.168.40.2,master_clock_rate=184.32e6                                           # Optionally pass arguments to the selected RF driver.
+  clock: external                                                        # Specify the clock source used by the RF.
+  sync: external                                                        # Specify the sync source used by the RF.
+  srate: 23.04                                                    # RF sample rate might need to be adjusted according to selected bandwidth.
+    #otw_format: sc12
+  tx_gain: 20                                                   # Transmit gain of the RF might need to adjusted to the given situation.
+  rx_gain: 25                                                   # Receive gain of the RF might need to adjusted to the given situation.
+
+  time_alignment_calibration: -200
+
+cell_cfg:
+  #dl_arfcn: 639000                                              # (3585 MHz) ARFCN of the downlink carrier (center frequency).
+  dl_arfcn: 641000                                              # (3615 MHz) ARFCN of the downlink carrier (center frequency).
+  #dl_arfcn: 505200                                              # (3555 MHz) ARFCN of the downlink carrier (center frequency).
+  band: 78                                                      # The NR band.
+  channel_bandwidth_MHz: 20                                     # Bandwith in MHz. Number of PRBs will be automatically derived.
+  common_scs: 30                                                # Subcarrier spacing in kHz used for data.
+  plmn: "90170"                                                 # PLMN broadcasted by the gNB.
+  tac: 7                                                        # Tracking area code (needs to match the core configuration).
+  pci: 1                                                        # Physical cell ID.i
+  pdsch:
+    #fixed_ue_mcs: 28
+  pusch:
+    #fixed_ue_mcs: 28   
+log:
+  filename: /tmp/gnb.log                                        # Path of the log file.
+  all_level: info                                             # Logging level applied to all layers.
+
+pcap:
+  mac_enable: True                                             # Set to true to enable MAC-layer PCAPs.
+  mac_filename: /tmp/gnb_mac.pcap                               # Path where the MAC PCAP is stored.
+  ngap_enable: True                                            # Set to true to enable NGAP PCAPs.
+  ngap_filename: /tmp/gnb_ngap.pcap                             # Path where the NGAP PCAP is stored.
+
+qos:
+  -
+    five_qi: 5
+    rlc:
+      mode: am
+      am:
+        tx:
+          sn: 18
+          t-poll-retransmit: 80
+          max-retx-threshold: 4
+          poll-pdu: 64
+          poll-byte: 125
+        rx:
+          sn: 18
+          t-reassembly: 80
+          t-status-prohibit: 10
+    pdcp:
+      tx:
+        sn: 18
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 18
+        t_reordering: 0
+        out_of_order_delivery: false
+  -
+    five_qi: 7
+    rlc:
+      mode: um-bidir
+      um-bidir:
+        tx:
+          sn: 12
+        rx:
+          sn: 12
+          t-reassembly: 50
+    pdcp:
+      tx:
+        sn: 18
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 18
+        t_reordering: 0
+        out_of_order_delivery: false
+  -
+    five_qi: 9
+    rlc:
+      mode: am
+      am:
+        tx:
+          sn: 18
+          t-poll-retransmit: 80
+          max-retx-threshold: 4
+          poll-pdu: 64
+          poll-byte: 125
+        rx:
+          sn: 18
+          t-reassembly: 80
+          t-status-prohibit: 10
+    pdcp:
+      tx:
+        sn: 18
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 18
+        t_reordering: 0
+        out_of_order_delivery: false

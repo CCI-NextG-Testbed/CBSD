@@ -1,0 +1,198 @@
+# This example configuration outlines how to configure the srsRAN Project gNB to create a single TDD cell
+# transmitting in band 78, with 20 MHz bandwidth and 30 kHz sub-carrier-spacing. A USRP B200 is configured 
+# as the RF frontend using split 8. Note in this example an external clock source is not used, so the sync 
+# is not defined and the default is used. 
+
+amf:
+  addr: 10.147.20.143
+    #addr: 127.0.0.5                                               # The address or hostname of the AMF.
+  bind_addr: 10.147.20.143                                            # A local IP that the gNB binds to for traffic from the AMF.
+
+ru_sdr:
+  device_driver: uhd                                              # The RF driver name.
+  device_args: type=x300, addr=192.168.40.2 #,master_clock_rate=184.32e6    # Optionally pass arguments to the selected RF driver.
+  srate: 11.52                                                    # RF sample rate might need to be adjusted according to selected bandwidth.
+    #otw_format: sc12
+  expert_cfg:
+   low_phy_thread_profile: quad
+  clock: external                                                        # Specify the clock source used by the RF.
+  sync: external                                                        # Specify the sync source used by the RF.
+    #time_alignment_calibration: -200
+  tx_gain: 15                                                     # Transmit gain of the RF might need to adjusted to the given situation.
+  rx_gain: 15                                                     # Receive gain of the RF might need to adjusted to the given situation.
+
+cell_cfg:
+  #dl_arfcn: 506400                                                # ARFCN of the downlink carrier (center frequency).
+  dl_arfcn: 640334
+  band: 78                                                        # The NR band.
+  channel_bandwidth_MHz: 10                                       # Bandwith in MHz. Number of PRBs will be automatically derived.
+  common_scs: 30                                                  # Subcarrier spacing in kHz used for data.
+  plmn: "00101"                                                   # PLMN broadcasted by the gNB.
+  tac: 7                                                          # Tracking area code (needs to match the core configuration).
+  pci: 1                                                          # Physical cell ID.
+  nof_antennas_dl: 2
+  nof_antennas_ul: 2
+  ssb:
+    ssb_period: 20
+  pdsch:
+    #min_ue_mcs: 28
+    mcs_table: qam256     #Use QAM256 MCS table in the downlink.
+  ssb:
+    ssb_period: 20     # Increase SSB periodicity to 20ms
+
+      #cu_cp:
+  #mobility:
+    #trigger_handover_from_measurements: True
+      #cells: 
+      #nr_cell_id: 2
+      #ncells:
+      #nr_cell_id: 2
+        #report_configs:
+        #gnb_id: 2
+      # ssb_arfcn:
+      #band:
+
+qos:
+  -
+    five_qi: 1 # E.g. Conversational Voice
+    rlc:
+      mode: um-bidir
+      um-bidir:
+        tx:
+          sn: 12
+        rx:
+          sn: 12
+          t-reassembly: 50
+    pdcp:
+      integrity_required: false
+      tx:
+        sn: 12
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 12
+        t_reordering: 80
+        out_of_order_delivery: false
+    f1u_du:
+      backoff_timer: 10
+    f1u_cu_up:
+      backoff_timer: 10
+  -
+    five_qi: 2 # E.g. Conversational Video
+    rlc:
+      mode: um-bidir
+      um-bidir:
+        tx:
+          sn: 12
+        rx:
+          sn: 12
+          t-reassembly: 50
+    pdcp:
+      integrity_required: false
+      tx:
+        sn: 12
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 12
+        t_reordering: 80
+        out_of_order_delivery: false
+    f1u_du:
+      backoff_timer: 10
+    f1u_cu_up:
+      backoff_timer: 10
+  -
+    five_qi: 5 # E.g. IMS signaling
+    rlc:
+      mode: am
+      am:
+        tx:
+          sn: 12
+          t-poll-retransmit: 80
+          max-retx-threshold: 4
+          poll-pdu: 64
+          poll-byte: 125
+        rx:
+          sn: 12
+          t-reassembly: 80
+          t-status-prohibit: 10
+    pdcp:
+      integrity_required: false
+      tx:
+        sn: 12
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 12
+        t_reordering: 80
+        out_of_order_delivery: false
+    f1u_du:
+      backoff_timer: 10
+    f1u_cu_up:
+      backoff_timer: 10
+  -
+    five_qi: 7 # E.g. Voice, Video (live streaming)
+    rlc:
+      mode: um-bidir
+      um-bidir:
+        tx:
+          sn: 12
+        rx:
+          sn: 12
+          t-reassembly: 50
+    pdcp:
+      integrity_required: false
+      tx:
+        sn: 12
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 12
+        t_reordering: 80
+        out_of_order_delivery: false
+    f1u_du:
+      backoff_timer: 10
+    f1u_cu_up:
+      backoff_timer: 10
+  -
+    five_qi: 9 # E.g. Buffered video streaming, TCP-based traffic
+    rlc:
+      mode: am
+      am:
+        tx:
+          sn: 12
+          t-poll-retransmit: 80
+          max-retx-threshold: 4
+          poll-pdu: 64
+          poll-byte: 125
+        rx:
+          sn: 12
+          t-reassembly: 80
+          t-status-prohibit: 10
+    pdcp:
+      integrity_required: false
+      tx:
+        sn: 12
+        discard_timer: -1
+        status_report_required: false
+      rx:
+        sn: 12
+        t_reordering: 80
+        out_of_order_delivery: false
+    f1u_du:
+      backoff_timer: 10
+    f1u_cu_up:
+      backoff_timer: 10
+
+
+
+
+log:
+  filename: /tmp/gnb.log                                          # Path of the log file.
+  all_level: info                                                 # Logging level applied to all layers. 
+
+pcap:
+  mac_enable: true                                               # Set to true to enable MAC-layer PCAPs.
+  mac_filename: /tmp/gnb_mac.pcap                                 # Path where the MAC PCAP is stored.
+  ngap_enable: true                                              # Set to true to enable NGAP PCAPs.
+  ngap_filename: /tmp/gnb_ngap.pcap                               # Path where the NGAP PCAP is stored.
