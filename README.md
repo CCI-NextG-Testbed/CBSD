@@ -5,3 +5,6 @@
 
 2. Modify run.py to add you gnb yml file name:
 ![image](https://github.com/user-attachments/assets/734da49e-360f-4a26-b8f8-3c442607c84e)
+
+3. Modify CBSD.py to inculde OpenSAS IP and proper CBSD client certificate path:
+   ![image](https://github.com/user-attachments/assets/121ad011-faba-4fb6-940e-7f5ba29461c6)
